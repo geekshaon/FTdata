@@ -13,7 +13,7 @@
 **A beautiful, fully client-side web app for creating and managing Alpaca-format datasets for LLM fine-tuning.**  
 No server. No account. No tracking. Your data stays on your device.
 
-[**Live Demo →**](https://your-deployment-url.pages.dev) &nbsp;·&nbsp; [Report Bug](../../issues) &nbsp;·&nbsp; [Request Feature](../../issues)
+[**Live Demo →**](https://ftdataset.pages.dev/) &nbsp;·&nbsp; [Report Bug](../../issues) &nbsp;·&nbsp; [Request Feature](../../issues)
 
 </div>
 
