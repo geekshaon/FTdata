@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #080c14;
+  --bg-surface: rgba(255, 255, 255, 0.04);
+  --bg-surface-hover: rgba(255, 255, 255, 0.07);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-normal: rgba(255, 255, 255, 0.12);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --accent-violet: #7c3aed;
+  --accent-indigo: #4f46e5;
+}
+
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  /* Next.js injects --font-tinos and --font-hind as CSS vars on <body> at runtime.
+     Tinos handles Latin glyphs; Hind Siliguri covers Bengali (U+0980–U+09FF).
+     Browsers automatically pick the correct font per-character from this stack. */
+  font-family: var(--font-tinos), var(--font-hind), "Times New Roman", Georgia, serif;
+  background-color: var(--bg-primary);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(124, 58, 237, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(79, 70, 229, 0.08), transparent);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Force inputs, buttons, textareas to inherit font — browsers reset these by default */
+input, button, textarea, select, optgroup, option {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Bengali script utility — apply wherever you have Bangla text */
+.font-bn {
+  font-family: var(--font-hind), "Siyam Rupali", "Shonar Bangla", serif;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+}
+
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Selection */
+::selection {
+  background: rgba(124, 58, 237, 0.4);
+  color: white;
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid rgba(124, 58, 237, 0.6);
+  outline-offset: 2px;
+}
+
+/* Animate-in utility */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes zoom-in-95 {
+  from { transform: scale(0.95); }
+  to   { transform: scale(1); }
+}
+.animate-in {
+  animation-fill-mode: both;
+  animation-duration: 200ms;
+}
+.fade-in { animation-name: fade-in; }
+.zoom-in-95 { animation-name: zoom-in-95; }
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Gradient border card */
+.gradient-card {
+  position: relative;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+.gradient-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.3), rgba(79, 70, 229, 0.1), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
