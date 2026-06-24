@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import {
   Filter, X, SlidersHorizontal, ChevronDown, ChevronUp, RotateCcw,
   Download, FileJson, Shield, Star,
@@ -73,6 +73,19 @@ export default function FilterPanel({
 }: FilterPanelProps) {
   const [open, setOpen]         = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
+  const exportRef = useRef<HTMLDivElement>(null);
+
+  // Click outside to close export dropdown
+  useEffect(() => {
+    if (!exportOpen) return;
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (exportRef.current && !exportRef.current.contains(e.target as Node)) {
+        setExportOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [exportOpen]);
 
   const activeCount = useMemo(() => {
     let n = 0;
@@ -107,7 +120,7 @@ export default function FilterPanel({
   };
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm overflow-hidden">
+    <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm relative z-20">
       {/* Header row */}
       <div className="flex items-center gap-3 px-4 py-3">
         <button
@@ -135,7 +148,7 @@ export default function FilterPanel({
         </span>
 
         {/* Export visible */}
-        <div className="relative">
+        <div className="relative" ref={exportRef}>
           <button
             onClick={() => setExportOpen((o) => !o)}
             className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl border border-emerald-500/25 bg-emerald-500/10 hover:bg-emerald-500/20 text-xs font-medium text-emerald-300 hover:text-emerald-200 transition-all"
@@ -145,25 +158,22 @@ export default function FilterPanel({
             Export ({resultCount})
           </button>
           {exportOpen && (
-            <>
-              <div className="fixed inset-0 z-10" onClick={() => setExportOpen(false)} />
-              <div className="absolute z-20 top-full mt-1 right-0 w-44 rounded-xl border border-white/10 bg-slate-900/95 backdrop-blur-sm shadow-2xl overflow-hidden">
-                {[
-                  { label: "Alpaca JSON",  icon: FileJson, format: "json"   as const, cls: "text-emerald-400" },
-                  { label: "Alpaca JSONL", icon: FileJson, format: "jsonl"  as const, cls: "text-cyan-400" },
-                  { label: "Full Backup",  icon: Shield,   format: "backup" as const, cls: "text-violet-400" },
-                ].map(({ label, icon: Icon, format, cls }) => (
-                  <button
-                    key={format}
-                    onClick={() => handleExportVisible(format)}
-                    className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white transition"
-                  >
-                    <Icon className={`w-3.5 h-3.5 ${cls}`} />
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </>
+            <div className="absolute z-20 top-full mt-1 right-0 w-44 rounded-xl border border-white/10 bg-slate-900/95 backdrop-blur-sm shadow-2xl overflow-hidden">
+              {[
+                { label: "Alpaca JSON",  icon: FileJson, format: "json"   as const, cls: "text-emerald-400" },
+                { label: "Alpaca JSONL", icon: FileJson, format: "jsonl"  as const, cls: "text-cyan-400" },
+                { label: "Full Backup",  icon: Shield,   format: "backup" as const, cls: "text-violet-400" },
+              ].map(({ label, icon: Icon, format, cls }) => (
+                <button
+                  key={format}
+                  onClick={() => handleExportVisible(format)}
+                  className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white transition"
+                >
+                  <Icon className={`w-3.5 h-3.5 ${cls}`} />
+                  {label}
+                </button>
+              ))}
+            </div>
           )}
         </div>
 

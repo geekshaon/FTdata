@@ -59,7 +59,7 @@ function WorkspaceView({
   const [deleteTarget, setDeleteTarget]     = useState<DataPoint | null>(null);
   const [viewItem, setViewItem]             = useState<DataPoint | null>(null);
   const [addEditOpen, setAddEditOpen]       = useState(false);
-  const [sidebarOpen, setSidebarOpen]       = useState(false);
+  const [sidebarOpen, setSidebarOpen]       = useState(true);
   const [shortcutsOpen, setShortcutsOpen]   = useState(false);
   const [query, setQuery]                   = useState("");
   const [filters, setFilters]               = useState<FilterState>(DEFAULT_FILTERS);
@@ -74,8 +74,24 @@ function WorkspaceView({
     return () => { onRefreshCounts(); };
   }, [onRefreshCounts]);
 
+  // Initialize and handle responsive sidebar behavior on mount and cross-boundary resize
   useEffect(() => {
-    const handle = () => { if (window.innerWidth >= 1024) setSidebarOpen(false); };
+    if (typeof window !== "undefined") {
+      setSidebarOpen(window.innerWidth >= 1024);
+    }
+  }, []);
+
+  useEffect(() => {
+    let lastWidth = window.innerWidth;
+    const handle = () => {
+      const currentWidth = window.innerWidth;
+      const wasDesktop = lastWidth >= 1024;
+      const isDesktop = currentWidth >= 1024;
+      if (wasDesktop !== isDesktop) {
+        setSidebarOpen(isDesktop);
+      }
+      lastWidth = currentWidth;
+    };
     window.addEventListener("resize", handle);
     return () => window.removeEventListener("resize", handle);
   }, []);
@@ -224,17 +240,21 @@ function WorkspaceView({
 
         {/* Main */}
         <main className="flex-1 max-w-screen-2xl w-full mx-auto px-4 sm:px-6 py-6">
-          <div className="flex gap-6">
+          <div className={`flex transition-all duration-300 ${sidebarOpen ? "gap-6" : "gap-6 lg:gap-0"}`}>
             {/* Right tools panel */}
             <aside
               className={`
                 fixed lg:relative top-0 right-0 inset-y-0 z-40 lg:z-auto
-                w-80 xl:w-[340px] shrink-0
-                ${sidebarOpen ? "translate-x-0" : "translate-x-full"} lg:translate-x-0
-                transition-transform duration-300 ease-in-out lg:transition-none
+                shrink-0
+                transition-all duration-300 ease-in-out
                 bg-[#080c14] lg:bg-transparent
-                pt-14 lg:pt-0 px-4 lg:px-0 pb-6 lg:pb-0
+                pt-14 lg:pt-0 pb-6 lg:pb-0
                 lg:sticky lg:top-[72px] lg:h-[calc(100vh-80px)]
+                w-80 px-4 lg:px-0
+                ${sidebarOpen
+                  ? "translate-x-0 lg:opacity-100 xl:w-[340px]"
+                  : "translate-x-full lg:translate-x-0 lg:w-0 xl:w-0 lg:opacity-0 lg:overflow-hidden lg:pointer-events-none"
+                }
               `}
             >
               <SidePanel
